@@ -3,40 +3,54 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pipeline-manager"
+name = "zib"
 version = "0.1.0"
-description = "A capability manager for AI-powered and infrastructure project components"
-requires-python = ">=3.12"
-dependencies = [
-    "click>=8.1",
-    "rich>=13.0",
-    "pydantic>=2.0",
-    "pyyaml>=6.0",
-    "deepmerge>=1.1",
+description = "A reference manager for AI coding agents — pin, update, and surface versioned external references (specs, frameworks, conventions) for an agent to read and apply."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Pulkit Sharma", email = "sharmapulkit7466@gmail.com" }]
+keywords = ["ai", "agent", "references", "specs", "reference-manager", "llm"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Environment :: Console",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Version Control :: Git",
 ]
+dependencies = [
+    "click>=8.1",    # app_cli shell: thin commands, completions, man pages
+    "tomlkit>=0.12", # manifest read/write (preserves user formatting) + lockfile emission
+]
+# IMPORTANT: core/ imports NONE of the above. It is pure stdlib (hashlib, dataclasses,
+# enum, re, unicodedata, typing). These deps belong to infrastructure/ and app_cli/ only —
+# that is the dependency rule (core depends on nothing) enforced in pyproject form.
+# Semver (ranges/comparison) is implemented in pure stdlib inside core (no third-party
+# semver lib), so version resolution stays in core without violating the dependency rule.
 
 [project.optional-dependencies]
-dev = [
-    "pytest>=8.0",
-    "ruff>=0.4",
-    "pyright>=1.1",
-]
+dev = ["pytest>=8.0"]
 
-[project.scripts]
-pipeline = "pipeline.cli:cli"
+[project.urls]
+# NOTE: replace `your-username` with your GitHub handle before/after creating the repo.
+Homepage = "https://github.com/your-username/zib"
+Repository = "https://github.com/your-username/zib"
+Issues = "https://github.com/your-username/zib/issues"
+
+# Console entry point — wired when app_cli lands (see decisions.md D1: single CLI shell).
+# [project.scripts]
+# zib = "zib.app_cli.main:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/pipeline"]
+packages = ["src/zib"]
 
 [tool.pytest.ini_options]
+# "src" → `import zib.*`; "." → `import tests.*` so capability tests can import the
+# shared fakes/scenarios that live under tests/ (per CLAUDE.md, fakes live in the test tree).
+pythonpath = ["src", "."]
 testpaths = ["tests"]
-pythonpath = ["src"]
-
-[tool.ruff]
-src = ["src"]
-line-length = 100
-
-[tool.pyright]
-pythonVersion = "3.12"
-typeCheckingMode = "standard"
-pythonPlatform = "All"
+addopts = "-q"

@@ -1,0 +1,9 @@
+{
+  "id": "evt_demo_0001",
+  "type": "order.confirmed",
+  "order_id": "ord_demo_0001",
+  "data": {
+    "status": "confirmed",
+    "items": [{ "sku": "SHOE-1", "qty": 1 }]
+  }
+}

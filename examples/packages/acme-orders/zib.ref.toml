@@ -1,0 +1,7 @@
+# zib.ref.toml — producer self-description.
+# Lives at the root of the pinned (sub)tree. zib reads EXACTLY these two fields,
+# verbatim, and parses nothing else — ever. The reference's OWN files are its full
+# self-description; this is only a one-line selection label + a role hint.
+
+description    = "Acme order orchestration — place, cancel, and fulfil orders over the Acme SDK"
+suggested_role = "order-orchestration"   # a HINT for the consumer; zib never auto-applies it
