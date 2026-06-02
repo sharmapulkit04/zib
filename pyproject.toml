@@ -36,10 +36,9 @@ dependencies = [
 dev = ["pytest>=8.0"]
 
 [project.urls]
-# NOTE: replace `your-username` with your GitHub handle before/after creating the repo.
-Homepage = "https://github.com/your-username/zib"
-Repository = "https://github.com/your-username/zib"
-Issues = "https://github.com/your-username/zib/issues"
+Homepage = "https://github.com/sharmapulkit04/zib"
+Repository = "https://github.com/sharmapulkit04/zib"
+Issues = "https://github.com/sharmapulkit04/zib/issues"
 
 # Console entry point — wired when app_cli lands (see decisions.md D1: single CLI shell).
 # [project.scripts]
