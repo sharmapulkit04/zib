@@ -40,9 +40,9 @@ Homepage = "https://github.com/sharmapulkit04/zib"
 Repository = "https://github.com/sharmapulkit04/zib"
 Issues = "https://github.com/sharmapulkit04/zib/issues"
 
-# Console entry point — wired when app_cli lands (see decisions.md D1: single CLI shell).
-# [project.scripts]
-# zib = "zib.app_cli.main:main"
+# Console entry point — single CLI shell (decisions.md D1).
+[project.scripts]
+zib = "zib.app_cli.main:cli"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/zib"]
