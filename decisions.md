@@ -341,6 +341,12 @@ contract** for `outdated`/`diff`/`update`/`confirm` so the CLI *emits context*.
    priming? (ties to DS5's `outdated`/`diff` output.)
 6. **Active vs passive state surfacing** — carryover from DS5: push at session start vs pull on demand.
 
+**Built (initial, forward-looking):** the installation spec **`INSTALL.md`** (a self-contained
+hand-to-any-agent bootstrap) + bundled **system references** under `src/zib/system/`
+(`integration`, `usage`, `authoring`). These ship inside the package and are materialized by
+`zib init` (forthcoming). CLI-dependent steps (`zib init`/`zib setup`, materialization, `--json`)
+are marked **forthcoming** until `app_cli` lands.
+
 ## DS8 — Tool name: `zib` (not `hew`)
 
 **Status:** Accepted · **Serves:** —
