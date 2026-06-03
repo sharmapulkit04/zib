@@ -72,9 +72,11 @@ and follow the next step it prints. You won't need this file again after install
 
 ## 6. Customize — in *your* notes, not zib's
 
-Project-specific usage ("how *this* project uses a reference") goes in the consumer's `notes.md`.
-zib stores it verbatim, never parses it, and it survives updates. The system references in §4 are
-zib's; your `notes.md` is yours.
+Project-specific usage ("how *this* project uses a reference") goes in the consumer's `notes.md`
+(`.zib/references/<name>/notes.md`). **Edit it directly** — there is no `zib note` command; zib stores
+it verbatim, never parses it, and it survives updates. **Never edit zib's generated files** under
+`.zib/` (the materialized content and `zib.lock`) — they are verified, and zib flags hand-edits. The
+system references in §4 are zib's; your `notes.md` is yours.
 
 ---
 

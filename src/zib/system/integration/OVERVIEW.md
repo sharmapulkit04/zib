@@ -6,9 +6,17 @@
 
 ## The model (works for any agent)
 
-- **Discovery floor:** a tiny block in `AGENTS.md` (and `CLAUDE.md` = `@AGENTS.md` for Claude — Claude
-  reads only `CLAUDE.md`) that says *"this project uses zib; run `zib status`."* `zib init` writes it.
-  Keep it small — it's always-on context.
+- **Discovery floor:** a tiny always-on block in `AGENTS.md` (and `CLAUDE.md` = `@AGENTS.md` for Claude
+  — Claude reads only `CLAUDE.md`), written by `zib init`. Keep it small — it's paid every turn. Canonical block:
+
+  ```
+  <!-- zib:start -->
+  This project uses **zib** to manage versioned external references. Whenever you add, apply,
+  update, or check one, go through zib — run `zib status` first.
+  Record project-specific usage in the reference's `notes.md` (edit that file directly);
+  never edit zib's generated files under `.zib/` (they are verified).
+  <!-- zib:end -->
+  ```
 - **The substance is the CLI:** zib's commands **emit context** — `zib status` / `zib diff` print what
   you need, fresh, on demand. You operate zib by running it and reading its output. This works in any
   agent that can run a shell, with zero priming.

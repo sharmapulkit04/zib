@@ -33,6 +33,8 @@
 | DS6 | Installation-concern package design (`examples/INSTALLING.md`) | **Proposed** | foreground-change · agent-is-consumer · dumb-tool |
 | DS7 | Agent-context delivery model (how the agent gets verbs + live state) | **🔄 Active** | agent-is-consumer · dumb-tool · minimalism |
 | DS8 | Tool name: keep `zib` (not `hew`); "hew to" → tagline | Accepted | — |
+| DS9 | Consumer notes layer: opt-in, single `notes.md`, direct-edit (zib owns lifecycle only) | Accepted | describe-not-restate · minimalism · dumb-tool |
+| DS10 | `.zib/` is a *zoned* tool dir (per-file ownership; generated=verified/do-not-edit, notes=edit-freely) | Accepted | agent-is-consumer · dumb-tool |
 
 **Status legend:** Accepted · Proposed (drafted, awaiting ratification) · 🔄 Active (live discussion, being improved) · Open (undecided) · Superseded.
 
@@ -359,6 +361,77 @@ distinctiveness, ambiguity, namespace collision, ergonomics, migration cost): **
 to), captured for free as the **tagline**: *"zib — hew to your references."* The Renesas "HEW"
 collision was judged irrelevant (different domain); the deciding factors against `hew` were the
 **hue/Hugh homophone** + migration cost.
+
+## DS9 — Consumer notes layer: opt-in, single `notes.md`, direct-edit
+
+**Status:** Accepted · **Serves:** describe-not-restate, minimalism, dumb-tool · **Built:** no
+(a lifecycle-only `NotesStore` port + wiring pending)
+
+**Context.** The consumer records project-specific usage ("how *this* project uses a reference") as
+the delta on the reference's own self-description (intent §3.4). Researched against package-manager
+patches, config overlays, AI-context tools, fragment-directory patterns, and edit-vs-command norms.
+
+**Decision.**
+- **Opt-in (Q1):** `notes.md` materializes only when there is a real delta to record. `add`/`swap` do
+  **not** scaffold an empty file. Signal: *file exists* → "usage recorded"; *absent* → "used as-is."
+  (Every surveyed layer — `.gitignore`, npm overrides, patch-package, towncrier, ADRs, Cursor rules —
+  materializes only on a real delta.) **Corrects** the earlier sketch that created `notes.md` on `add`.
+- **Single flat `notes.md` (Q2):** one per-reference prose file. **Reject** a `notes/` directory and a
+  "full overlay spec." A directory earns its place only on concurrent multi-author collisions
+  (towncrier) or per-item append-only identity (ADRs) — both absent here (one agent, one reference, one
+  living delta; git already gives history). "Full liberty to add specs" is the wrong instinct here:
+  *liberty to add specs is liberty to restate the reference* — the one thing §3.4 forbids. If notes
+  outgrow a file, the agent links out (like `@`-imports) — additive, no new concept. A directory is a
+  v2 escalation gated on real evidence; even then zib only *lists*, never merges/ranks (ranking =
+  parsing = violates dumb-tool).
+- **Direct-edit content; zib owns only lifecycle (Q3):** the **agent/user write the bytes** with
+  ordinary file tools. **No `zib note` content command** — over opaque prose it could only blind-append
+  (ceremony) and would tempt zib to police the content it promised to leave alone. zib owns the **slot
+  lifecycle** (reserve path, survive-update / reset-on-swap, archive-to-git), which already lives in
+  `add`/`swap`/`remove` — so "both" adds no new command, it just names the boundary.
+
+**Lifecycle.** survives update (it sits at the `<name>` level, above the version-labeled content) ·
+resets on swap (old notes archived, recoverable via git) · cleared on remove (recoverable via git).
+
+**To build.** a lifecycle-only `NotesStore` port (reserve / read / reset-archive — **no content verb**)
++ path `.zib/references/<name>/notes.md` + surfacing in `show`/`read`. Ownership zoning → DS10.
+
+## DS10 — `.zib/` is a *zoned* tool directory (ownership is per-file, not per-dir)
+
+**Status:** Accepted · **Serves:** agent-is-consumer, dumb-tool · **Built:** no (signal files pending)
+
+**Context.** Putting human-editable `notes.md` inside `.zib/` raised: does a dot-directory mean
+"tool-only, don't touch"? Researched dot-dir conventions.
+
+**Finding.** The dot prefix means "tooling/meta, out of the primary source view" — **not** "untouchable."
+Convention is **per-file**: `.git`/`.terraform` = opaque/generated (don't edit); lockfiles
+(`.terraform.lock.hcl`, `package-lock.json`) = committed but don't-edit; `.github`/`.cursor`/`.husky` =
+**human-authored, committed, hand-edited**. So `.zib/` can hold human-editable content like `.github`
+does — *if zib signals which files are which.*
+
+**Decision — three ownership zones, each signaled:**
+
+| Path | Owner | Edit? | Committed? |
+|---|---|---|---|
+| `zib.toml` (root) | co-authored (you declare; zib rewrites preserving format) | ✏️ yes | yes |
+| `zib.lock` | zib (lockfile) | 🔒 no — "managed by zib" | yes |
+| `.zib/references/<name>/<label>/…` | zib (generated, verified) | 🔒 no — "DO NOT EDIT" | yes (H4) |
+| `.zib/references/<name>/notes.md` | agent / user (authored) | ✏️ freely | yes |
+
+- Generated content's "do not edit" is **enforced, not advisory**: zib's content-hash **verify** catches
+  hand-edits (cf. APM `audit`). `notes.md` is never parsed/clobbered, so "edit freely" is real.
+- The **manifest stays at root** (not buried in `.zib/`) to signal it's the primary editable surface.
+
+**Signal the zones (zib emits these):**
+- `.zib/README.md`: *"`<label>/` content and `zib.lock` are generated by zib — do not edit (verified
+  every command). `notes.md` files are yours — edit freely; zib stores them verbatim and never changes them."*
+- Each `notes.md` header: *"Your project-specific notes for `<name>`. Edit freely. zib stores this
+  verbatim and never parses or overwrites it (it resets only on a deliberate swap, archived to git)."*
+- Generated content carries a `Generated by zib — DO NOT EDIT` marker, backed by the verify check.
+
+**Delivery (the editing contract reaches the agent three ways — DS7):** a tiny always-on `AGENTS.md`
+line (discovery) → the bundled `usage` system reference (detail) → **per-file headers (the operative
+rule, seen at edit time — the most robust channel)**, backstopped by zib's verify.
 
 ---
 

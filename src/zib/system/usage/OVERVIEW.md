@@ -30,4 +30,18 @@ poll → update | upgrade → diff → apply to code → confirm
 - **You** interpret and apply; zib computes and records. Read the change — never assume.
 - After applying, `zib confirm` closes the owed-delta gap.
 
-Record project-specific usage in the consumer's `notes.md` (survives updates; zib never parses it).
+## Notes — your project-specific usage
+
+Record how *this* project uses a reference in its **`notes.md`** — only the delta on top of what the
+reference already says about itself (don't restate the reference).
+
+- **Where:** `.zib/references/<name>/notes.md`. **Opt-in** — create it only when you have something
+  project-specific to record (no empty stubs).
+- **How:** edit the file **directly**, with the same tools you edit code. There is **no `zib note`
+  command** — zib stores `notes.md` verbatim and never parses it.
+- **What NOT to touch:** never edit zib's generated content (`.zib/references/<name>/<label>/…`) or
+  `zib.lock` — they are verified against the pin, and zib flags hand-edits.
+- **Lifecycle:** notes **survive** an update (same reference, newer version) and **reset** on a swap
+  (a different reference needs different usage; the old notes archive to git, recoverable).
+
+Read a reference's `notes.md` for project context *before* applying it.
